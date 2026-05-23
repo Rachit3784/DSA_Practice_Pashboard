@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { Sun, Moon } from "lucide-react";
 
 /* ─────────────────────────── STORAGE HELPER ─────────────────────────── */
 const LS_KEY = "dsa_solved_v3";
@@ -2388,6 +2389,357 @@ boolean helper(int[] nums, int i){
     return sum;
 }`,note:"After negating all negatives, if k is still odd, flip minimum element (smallest absolute value) once."}},
 
+  {
+    "id": 111, "num": "CF-136A", "name": "Presents", "cat": "1D Array", "difficulty": "Easy",
+    "day": 1, "topic": "Arrays & Two Pointers", "sheets": ["Amazon"], "pattern": "Array Inversion", "algo": "Index Mapping", "tags": ["arrays", "math"],
+    "concept": "If friend A gave to B, then B received from A. Invert index↔value: ans[arr[i]] = i.",
+    "brute": { "tc": "O(n²)", "sc": "O(n)", "code": "for(int i=1;i<=n;i++) { for(int j=1;j<=n;j++) { if(arr[j]==i) print(j); } }" },
+    "optimal": { "tc": "O(n)", "sc": "O(n)", "code": "int[] ans=new int[n+1];\nfor(int i=1;i<=n;i++) ans[arr[i]]=i;\n// print ans[1..n]" }
+  },
+  {
+    "id": 112, "num": "CF-266B", "name": "Queue at the School", "cat": "String", "difficulty": "Easy",
+    "day": 1, "topic": "Arrays & Two Pointers", "sheets": ["CodeForces"], "pattern": "Simulation", "algo": "In-place Swap", "tags": ["simulation", "string"],
+    "concept": "Each second, simultaneously swap every 'BG' pair. Process left-to-right in one pass per second; skip i++ after a swap to avoid double-processing.",
+    "brute": { "tc": "O(t×n)", "sc": "O(n)", "code": "// Same as optimal; simulation is the only approach." },
+    "optimal": { "tc": "O(t×n)", "sc": "O(n)", "code": "char[] s=str.toCharArray();\nwhile(t-->0){\n  for(int i=0;i<n-1;i++){\n    if(s[i]=='B'&&s[i+1]=='G'){s[i]='G';s[i+1]='B';i++;}\n  }\n}" }
+  },
+  {
+    "id": 113, "num": "CF-381A", "name": "Sereja and Dima", "cat": "1D Array", "difficulty": "Easy",
+    "day": 1, "topic": "Arrays & Two Pointers", "sheets": ["Amazon"], "pattern": "Two Pointer", "algo": "Greedy Ends", "tags": ["greedy", "two pointer"],
+    "concept": "Greedily pick the larger of two ends. Converge l and r pointers, alternating turns.",
+    "brute": { "tc": "O(n)", "sc": "O(1)", "code": "// Greedy is already optimal." },
+    "optimal": { "tc": "O(n)", "sc": "O(1)", "code": "int l=0,r=n-1,s=0,d=0,turn=0;\nwhile(l<=r){\n  int val=(arr[l]>arr[r])?arr[l++]:arr[r--];\n  if(turn%2==0) s+=val; else d+=val;\n  turn++;\n}" }
+  },
+  {
+    "id": 4, "num": "CF-58A", "name": "Chat room", "cat": "String", "difficulty": "Easy",
+    "day": 1, "topic": "Arrays & Two Pointers", "sheets": ["Microsoft", "Amazon"], "pattern": "Subsequence Check", "algo": "Two Pointer", "tags": ["string", "two pointer"],
+    "concept": "Check if 'hello' is a subsequence of the input. Keep a pointer j on 'hello'; advance when characters match.",
+    "brute": { "tc": "O(n)", "sc": "O(1)", "code": "// Subsequence check is already linear." },
+    "optimal": { "tc": "O(n)", "sc": "O(1)", "code": "String h=\"hello\"; int j=0;\nfor(int i=0;i<s.length();i++){\n  if(s.charAt(i)==h.charAt(j)) j++;\n  if(j==5) return \"YES\";\n}\nreturn \"NO\";" }
+  },
+  {
+    "id": 115, "num": "CF-118A", "name": "String Task", "cat": "String", "difficulty": "Easy",
+    "day": 1, "topic": "Arrays & Two Pointers", "sheets": ["Google", "Amazon"], "pattern": "String Processing", "algo": "Character Filter", "tags": ["string"],
+    "concept": "Remove vowels, prepend '.' to each consonant, convert all to lowercase.",
+    "brute": { "tc": "O(n)", "sc": "O(n)", "code": "// Manual character check." },
+    "optimal": { "tc": "O(n)", "sc": "O(n)", "code": "StringBuilder sb=new StringBuilder();\nString v=\"aoyeui\";\nfor(char c:s.toLowerCase().toCharArray()){\n  if(v.indexOf(c)==-1) sb.append('.').append(c);\n}\nreturn sb.toString();" }
+  },
+  {
+    "id": 116, "num": "CF-489B", "name": "BerSU Ball", "cat": "1D Array", "difficulty": "Medium",
+    "day": 1, "topic": "Arrays & Two Pointers", "sheets": ["Amazon"], "pattern": "Two Pointer on Sorted", "algo": "Merge-style Matching", "tags": ["greedy", "sorting"],
+    "concept": "Sort both arrays. Use two pointers: match a boy-girl pair if |a[i]-b[j]|<=1, else advance the smaller pointer.",
+    "brute": { "tc": "O(n×m)", "sc": "O(1)", "code": "// Nested loops with visited array." },
+    "optimal": { "tc": "O(n log n + m log m)", "sc": "O(1)", "code": "Arrays.sort(a); Arrays.sort(b);\nint i=0,j=0,pairs=0;\nwhile(i<n&&j<m){\n  if(Math.abs(a[i]-b[j])<=1){pairs++;i++;j++;}\n  else if(a[i]<b[j]) i++; else j++;\n}\nreturn pairs;" }
+  },
+  {
+    "id": 117, "num": "CF-279B", "name": "Books", "cat": "1D Array", "difficulty": "Medium",
+    "day": 2, "topic": "Sliding Window & Hashing", "sheets": ["Amazon", "Google"], "pattern": "Variable Sliding Window", "algo": "Two Pointer Window", "tags": ["sliding window"],
+    "concept": "Expand window right; if sum > t, shrink from left. Track maximum window length.",
+    "brute": { "tc": "O(n²)", "sc": "O(1)", "code": "// Try every subarray." },
+    "optimal": { "tc": "O(n)", "sc": "O(1)", "code": "int max=0,sum=0,l=0;\nfor(int r=0;r<n;r++){\n  sum+=arr[r];\n  while(sum>t) sum-=arr[l++];\n  max=Math.max(max,r-l+1);\n}\nreturn max;" }
+  },
+  {
+    "id": 118, "num": "CF-363B", "name": "Fence", "cat": "1D Array", "difficulty": "Medium",
+    "day": 2, "topic": "Sliding Window & Hashing", "sheets": ["CodeForces"], "pattern": "Fixed Sliding Window", "algo": "Window Sum", "tags": ["sliding window"],
+    "concept": "Fixed window of size K. Slide and find minimum sum window. Track starting index.",
+    "brute": { "tc": "O(n×k)", "sc": "O(1)", "code": "// Sum every k consecutive elements." },
+    "optimal": { "tc": "O(n)", "sc": "O(1)", "code": "int sum=0,minSum=Integer.MAX_VALUE,idx=0;\nfor(int i=0;i<n;i++){\n  sum+=arr[i];\n  if(i>=k) sum-=arr[i-k];\n  if(i>=k-1&&sum<minSum){minSum=sum;idx=i-k+2;}\n}\nreturn idx;" }
+  },
+  {
+    "id": 119, "num": "CF-520A", "name": "Pangram", "cat": "String", "difficulty": "Easy",
+    "day": 2, "topic": "Sliding Window & Hashing", "sheets": ["Amazon"], "pattern": "HashSet Frequency", "algo": "Frequency Count", "tags": ["string", "hashing"],
+    "concept": "Check if all 26 letters appear. Use a boolean array of size 26 or a HashSet.",
+    "brute": { "tc": "O(26×n)", "sc": "O(1)", "code": "// Check for each letter separately." },
+    "optimal": { "tc": "O(n)", "sc": "O(26)", "code": "boolean[] seen=new boolean[26];\nfor(char c:s.toLowerCase().toCharArray()) seen[c-'a']=true;\nfor(boolean b:seen) if(!b) return \"NO\";\nreturn \"YES\";" }
+  },
+  {
+    "id": 120, "num": "CF-977C", "name": "Less or Equal", "cat": "1D Array", "difficulty": "Medium",
+    "day": 2, "topic": "Sliding Window & Hashing", "sheets": ["Microsoft"], "pattern": "Sorting + Edge Cases", "algo": "Sort and Index", "tags": ["sorting", "math"],
+    "concept": "Sort. If k=0, answer is arr[0]-1 if arr[0]>1 else -1. Otherwise check arr[k-1]!=arr[k].",
+    "brute": { "tc": "O(n log n)", "sc": "O(1)", "code": "// Must handle k=0 edge case." },
+    "optimal": { "tc": "O(n log n)", "sc": "O(1)", "code": "Arrays.sort(a);\nif(k==0) return a[0]>1?1:-1;\nif(k<n&&a[k-1]==a[k]) return -1;\nreturn a[k-1];" }
+  },
+  {
+    "id": 121, "num": "CF-1360B", "name": "Honest Coach", "cat": "1D Array", "difficulty": "Easy",
+    "day": 2, "topic": "Sliding Window & Hashing", "sheets": ["CodeForces"], "pattern": "Sorting", "algo": "Adjacent Diff", "tags": ["sorting"],
+    "concept": "Sort. Min difference in final 2 players = min of adjacent differences in sorted array.",
+    "brute": { "tc": "O(n²)", "sc": "O(1)", "code": "// Compare all pairs." },
+    "optimal": { "tc": "O(n log n)", "sc": "O(1)", "code": "Arrays.sort(a);\nint min=Integer.MAX_VALUE;\nfor(int i=1;i<n;i++) min=Math.min(min,a[i]-a[i-1]);\nreturn min;" }
+  },
+  {
+    "id": 122, "num": "CF-1399A", "name": "Remove Smallest", "cat": "1D Array", "difficulty": "Easy",
+    "day": 2, "topic": "Sliding Window & Hashing", "sheets": ["CodeForces"], "pattern": "Sorting + Greedy", "algo": "Adjacent Check", "tags": ["sorting", "greedy"],
+    "concept": "Sort. If any two adjacent elements differ by more than 1, answer is NO.",
+    "brute": { "tc": "O(n log n)", "sc": "O(1)", "code": "// Sorting forces optimal comparison order." },
+    "optimal": { "tc": "O(n log n)", "sc": "O(1)", "code": "Arrays.sort(a);\nfor(int i=1;i<n;i++){\n  if(a[i]-a[i-1]>1) return \"NO\";\n}\nreturn \"YES\";" }
+  },
+  {
+    "id": 123, "num": "CF-433B", "name": "Kuriyama Mirai's Stones", "cat": "1D Array", "difficulty": "Medium",
+    "day": 3, "topic": "Prefix Sums & Math", "sheets": ["Microsoft"], "pattern": "Prefix Sum Dual", "algo": "Sorting + Prefix", "tags": ["prefix sum", "sorting"],
+    "concept": "Build prefix sum on original array and on sorted array. Answer queries in O(1) using range formula.",
+    "brute": { "tc": "O(q×n)", "sc": "O(1)", "code": "// Iterate l to r for each query." },
+    "optimal": { "tc": "O(n log n + q)", "sc": "O(n)", "code": "long[] pre1=new long[n+1],pre2=new long[n+1];\nfor(int i=0;i<n;i++) pre1[i+1]=pre1[i]+a[i];\nArrays.sort(a);\nfor(int i=0;i<n;i++) pre2[i+1]=pre2[i]+a[i];\n// query: pre[r]-pre[l-1]" }
+  },
+  {
+    "id": 124, "num": "CF-313B", "name": "Ilya and Queries", "cat": "String", "difficulty": "Medium",
+    "day": 3, "topic": "Prefix Sums & Math", "sheets": ["Amazon"], "pattern": "Prefix Sum on String", "algo": "Character Match Prefix", "tags": ["prefix sum", "string"],
+    "concept": "dp[i] = dp[i-1] + (s[i]==s[i-1]?1:0). Query [l,r] answer = dp[r-1]-dp[l-1].",
+    "brute": { "tc": "O(q×n)", "sc": "O(1)", "code": "// Iterate l to r for each query." },
+    "optimal": { "tc": "O(n + q)", "sc": "O(n)", "code": "int[] dp=new int[n];\nfor(int i=1;i<n;i++) dp[i]=dp[i-1]+(s.charAt(i)==s.charAt(i-1)?1:0);\n// query l,r: dp[r-1]-dp[l-1]" }
+  },
+  {
+    "id": 125, "num": "CF-165C", "name": "Another Problem on Strings", "cat": "String", "difficulty": "Hard",
+    "day": 3, "topic": "Prefix Sums & Math", "sheets": ["Amazon"], "pattern": "Prefix Sum + HashMap", "algo": "Subarray Sum = K", "tags": ["prefix sum", "hashmap"],
+    "concept": "Count substrings with exactly K ones. Classic prefix sum + HashMap: count pairs where pre[j]-pre[i]=K.",
+    "brute": { "tc": "O(n²)", "sc": "O(1)", "code": "// Check all subarrays." },
+    "optimal": { "tc": "O(n)", "sc": "O(n)", "code": "Map<Integer,Integer> map=new HashMap<>();\nmap.put(0,1); int pre=0; long ans=0;\nfor(char c:s.toCharArray()){\n  pre+=(c-'0');\n  ans+=map.getOrDefault(pre-k,0);\n  map.put(pre,map.getOrDefault(pre,0)+1);\n}\nreturn ans;" }
+  },
+  {
+    "id": 126, "num": "CF-466C", "name": "Number of Ways", "cat": "1D Array", "difficulty": "Hard",
+    "day": 3, "topic": "Prefix Sums & Math", "sheets": ["Google"], "pattern": "3-Part Split", "algo": "Prefix Count", "tags": ["prefix sum"],
+    "concept": "Split array into 3 equal sum parts. Total must be divisible by 3. Count valid j positions after all valid i positions.",
+    "brute": { "tc": "O(n²)", "sc": "O(1)", "code": "// Try all split point pairs i and j." },
+    "optimal": { "tc": "O(n)", "sc": "O(1)", "code": "if(total%3!=0) return 0;\nlong target=total/3,sum=0,ways=0,count=0;\nfor(int i=0;i<n-1;i++){\n  sum+=a[i];\n  if(sum==target*2) ways+=count;\n  if(sum==target) count++;\n}\nreturn ways;" }
+  },
+  {
+    "id": 127, "num": "CF-1520D", "name": "Same Differences", "cat": "1D Array", "difficulty": "Medium",
+    "day": 3, "topic": "Prefix Sums & Math", "sheets": ["Amazon"], "pattern": "HashMap Counting", "algo": "Index Transformation", "tags": ["hashmap", "math"],
+    "concept": "Count pairs where a[j]-a[i]=j-i → a[j]-j=a[i]-i. Group by (a[i]-i) and count pairs within each group.",
+    "brute": { "tc": "O(n²)", "sc": "O(1)", "code": "// Check all i,j pairs." },
+    "optimal": { "tc": "O(n)", "sc": "O(n)", "code": "Map<Integer,Long> map=new HashMap<>();\nlong count=0;\nfor(int i=0;i<n;i++){\n  int val=a[i]-i;\n  count+=map.getOrDefault(val,0L);\n  map.put(val,map.getOrDefault(val,0L)+1);\n}\nreturn count;" }
+  },
+  {
+    "id": 128, "num": "CF-1352C", "name": "K-th Not Divisible by n", "cat": "Math", "difficulty": "Medium",
+    "day": 3, "topic": "Prefix Sums & Math", "sheets": ["Microsoft"], "pattern": "Pure Math", "algo": "Formula Derivation", "tags": ["math"],
+    "concept": "In every block of n integers, n-1 are not divisible. Formula: answer = k + (k-1)/(n-1).",
+    "brute": { "tc": "O(k)", "sc": "O(1)", "code": "// Iterate and skip multiples of n." },
+    "optimal": { "tc": "O(1)", "sc": "O(1)", "code": "return k+(k-1)/(n-1); // Pure math formula" }
+  },
+  {
+    "id": 129, "num": "CF-474B", "name": "Worms", "cat": "1D Array", "difficulty": "Medium",
+    "day": 4, "topic": "Binary Search & Greedy", "sheets": ["Amazon"], "pattern": "Binary Search on Prefix", "algo": "Lower Bound", "tags": ["binary search", "prefix sum"],
+    "concept": "Build prefix sums of pile sizes. For query w, binary search (lower_bound) for first pile whose prefix >= w.",
+    "brute": { "tc": "O(q×n)", "sc": "O(n)", "code": "// Linear scan for every query." },
+    "optimal": { "tc": "O(q log n)", "sc": "O(n)", "code": "int[] pre=new int[n]; pre[0]=a[0];\nfor(int i=1;i<n;i++) pre[i]=pre[i-1]+a[i];\n// for query q:\nint lo=0,hi=n-1;\nwhile(lo<hi){\n  int mid=lo+(hi-lo)/2;\n  if(pre[mid]>=q) hi=mid; else lo=mid+1;\n}\nreturn lo+1;" }
+  },
+  {
+    "id": 130, "num": "CF-670D1", "name": "Magic Powder", "cat": "1D Array", "difficulty": "Medium",
+    "day": 4, "topic": "Binary Search & Greedy", "sheets": ["Google"], "pattern": "Binary Search on Answer", "algo": "Feasibility Check", "tags": ["binary search"],
+    "concept": "Binary search on number of cookies. For mid cookies, compute required extra powder; check if ≤ k.",
+    "brute": { "tc": "O(ans×n)", "sc": "O(1)", "code": "// Cookie by cookie simulation." },
+    "optimal": { "tc": "O(n log MAX)", "sc": "O(1)", "code": "long lo=0,hi=2000000000L;\nwhile(lo<hi){\n  long mid=lo+(hi-lo+1)/2,need=0;\n  for(int i=0;i<n;i++){\n    if(a[i]*mid>b[i]) need+=(a[i]*mid-b[i]);\n    if(need>k) break;\n  }\n  if(need<=k) lo=mid; else hi=mid-1;\n}\nreturn lo;" }
+  },
+  {
+    "id": 131, "num": "CF-706B", "name": "Interesting Drink", "cat": "1D Array", "difficulty": "Medium",
+    "day": 4, "topic": "Binary Search & Greedy", "sheets": ["Amazon"], "pattern": "Upper Bound Binary Search", "algo": "Count ≤ Budget", "tags": ["binary search", "sorting"],
+    "concept": "Sort prices. For each query (budget), count affordable shops using upper_bound binary search.",
+    "brute": { "tc": "O(q×n)", "sc": "O(1)", "code": "// Linear count for each query." },
+    "optimal": { "tc": "O(n log n + q log n)", "sc": "O(1)", "code": "Arrays.sort(a);\n// per query q: upper_bound\nint lo=0,hi=n;\nwhile(lo<hi){\n  int mid=lo+(hi-lo)/2;\n  if(a[mid]<=q) lo=mid+1; else hi=mid;\n}\nreturn lo;" }
+  },
+  {
+    "id": 22, "num": "CF-978C", "name": "Letters", "cat": "1D Array", "difficulty": "Medium",
+    "day": 4, "topic": "Binary Search & Greedy", "sheets": ["CodeForces"], "pattern": "Two Pointer on Prefix", "algo": "Cumulative Pointer", "tags": ["two pointer", "prefix sum"],
+    "concept": "Since queries arrive sorted, use a pointer that advances through dorm boundaries. O(n+q) beats binary search per query.",
+    "brute": { "tc": "O(q×n)", "sc": "O(1)", "code": "// Recalculate dorm for every letter." },
+    "optimal": { "tc": "O(n + q)", "sc": "O(n)", "code": "long pre=0; int dorm=0;\nfor(long letter:queries){\n  while(pre+a[dorm]<letter) pre+=a[dorm++];\n  System.out.println((dorm+1)+\" \"+(letter-pre));\n}" }
+  },
+  {
+    "id": 23, "num": "CF-230A", "name": "Dragons", "cat": "2D Array", "difficulty": "Medium",
+    "day": 4, "topic": "Binary Search & Greedy", "sheets": ["Google"], "pattern": "Greedy Ordering", "algo": "Sort by Strength", "tags": ["greedy", "sorting"],
+    "concept": "Sort by strength ascending. Defeat weakest first to maximize bonus accumulation. Greedy exchange argument proves optimality.",
+    "brute": { "tc": "O(n!)", "sc": "O(n)", "code": "// All permutations." },
+    "optimal": { "tc": "O(n log n)", "sc": "O(1)", "code": "Arrays.sort(arr,(a,b)->Integer.compare(a[0],b[0]));\nfor(int[] d:arr){\n  if(s>d[0]) s+=d[1];\n  else return \"NO\";\n}\nreturn \"YES\";" }
+  },
+  {
+    "id": 24, "num": "CF-158B", "name": "Taxi", "cat": "1D Array", "difficulty": "Medium",
+    "day": 4, "topic": "Binary Search & Greedy", "sheets": ["CodeForces"], "pattern": "Greedy Bin Packing", "algo": "Group Math", "tags": ["greedy", "math"],
+    "concept": "4s go alone, 3s pair with 1s, 2s pair with 2s, remaining 1s fill 4s. Greedy count formula.",
+    "brute": { "tc": "O(n)", "sc": "O(1)", "code": "// Greedy math is already optimal." },
+    "optimal": { "tc": "O(n)", "sc": "O(5)", "code": "int[] c=new int[5];\nfor(int x:a) c[x]++;\nint taxis=c[4]+c[3]+c[2]/2;\nc[1]-=Math.min(c[1],c[3]);\nif(c[2]%2==1){taxis++;c[1]-=Math.min(c[1],2);}\nif(c[1]>0) taxis+=(c[1]+3)/4;\nreturn taxis;" }
+  },
+  {
+    "id": 25, "num": "CF-455A", "name": "Boredom", "cat": "1D Array", "difficulty": "Hard",
+    "day": 5, "topic": "Dynamic Programming", "sheets": ["Amazon"], "pattern": "House Robber DP", "algo": "Frequency DP", "tags": ["dp", "house robber"],
+    "concept": "Picking X earns X×freq[X] but forbids X±1. Maps to House Robber on frequency array: dp[i]=max(dp[i-1], dp[i-2]+i×freq[i]).",
+    "brute": { "tc": "O(2^n)", "sc": "O(n)", "code": "// Exponential subset selection." },
+    "optimal": { "tc": "O(n + max_val)", "sc": "O(max_val)", "code": "long[] dp=new long[100005];\ndp[1]=freq[1];\nfor(int i=2;i<=100000;i++){\n  dp[i]=Math.max(dp[i-1],dp[i-2]+i*(long)freq[i]);\n}\nreturn dp[100000];" }
+  },
+  {
+    "id": 26, "num": "CF-189A", "name": "Cut Ribbon", "cat": "1D Array", "difficulty": "Medium",
+    "day": 5, "topic": "Dynamic Programming", "sheets": ["Microsoft"], "pattern": "Unbounded Knapsack", "algo": "1D DP", "tags": ["dp", "knapsack"],
+    "concept": "Maximize ribbon cuts using lengths a,b,c. dp[i]=max cuts for ribbon of length i. Initialize dp[i]=-INF except dp[0]=0.",
+    "brute": { "tc": "O(3^n)", "sc": "O(n)", "code": "// 3-branch recursion." },
+    "optimal": { "tc": "O(n)", "sc": "O(n)", "code": "int[] dp=new int[n+1]; Arrays.fill(dp,-10000); dp[0]=0;\nfor(int i=1;i<=n;i++){\n  if(i>=a) dp[i]=Math.max(dp[i],dp[i-a]+1);\n  if(i>=b) dp[i]=Math.max(dp[i],dp[i-b]+1);\n  if(i>=c) dp[i]=Math.max(dp[i],dp[i-c]+1);\n}\nreturn dp[n];" }
+  },
+  {
+    "id": 27, "num": "CF-702A", "name": "Maximum Increase", "cat": "1D Array", "difficulty": "Easy",
+    "day": 5, "topic": "Dynamic Programming", "sheets": ["Amazon"], "pattern": "Subarray DP", "algo": "LIS Contiguous", "tags": ["dp"],
+    "concept": "Longest strictly increasing CONTIGUOUS subarray. dp[i] = a[i]>a[i-1] ? dp[i-1]+1 : 1.",
+    "brute": { "tc": "O(n²)", "sc": "O(1)", "code": "// Check all subarrays." },
+    "optimal": { "tc": "O(n)", "sc": "O(1)", "code": "int max=1,curr=1;\nfor(int i=1;i<n;i++){\n  if(a[i]>a[i-1]) curr++; else curr=1;\n  max=Math.max(max,curr);\n}\nreturn max;" }
+  },
+  {
+    "id": 28, "num": "CF-327A", "name": "Flipping Game", "cat": "1D Array", "difficulty": "Medium",
+    "day": 5, "topic": "Dynamic Programming", "sheets": ["Google"], "pattern": "Kadane's Algorithm", "algo": "Max Subarray Gain", "tags": ["dp", "kadane"],
+    "concept": "Flip turns 0→+1 and 1→-1. Apply Kadane's to find the flip subarray maximizing net gain. Handle all-1s edge case.",
+    "brute": { "tc": "O(n²)", "sc": "O(1)", "code": "// Try flipping every subarray." },
+    "optimal": { "tc": "O(n)", "sc": "O(1)", "code": "int ones=0,maxGain=-1,curr=0;\nfor(int x:a){\n  if(x==1){ones++;curr--;} else curr++;\n  if(curr<0) curr=0;\n  maxGain=Math.max(maxGain,curr);\n}\nreturn maxGain==-1?ones-1:ones+maxGain;" }
+  },
+  {
+    "id": 29, "num": "CF-545C", "name": "Woodcutters", "cat": "1D Array", "difficulty": "Medium",
+    "day": 5, "topic": "Dynamic Programming", "sheets": ["Amazon"], "pattern": "Greedy DP", "algo": "Left/Right Fall", "tags": ["greedy", "dp"],
+    "concept": "Try falling left if x[i]-h[i]>x[i-1], else fall right if x[i]+h[i]<x[i+1]. Update virtual position if falling right. Ends always free.",
+    "brute": { "tc": "O(2^n)", "sc": "O(n)", "code": "// Try all left/right/no fall combos." },
+    "optimal": { "tc": "O(n)", "sc": "O(1)", "code": "if(n==1) return 1;\nint count=2;\nfor(int i=1;i<n-1;i++){\n  if(x[i]-h[i]>x[i-1]) count++;\n  else if(x[i]+h[i]<x[i+1]){count++;x[i]+=h[i];}\n}\nreturn count;" }
+  },
+  {
+    "id": 30, "num": "CF-492B", "name": "Vanya and Lanterns", "cat": "1D Array", "difficulty": "Medium",
+    "day": 5, "topic": "Dynamic Programming", "sheets": ["Amazon"], "pattern": "Sorting + Math", "algo": "Max Gap", "tags": ["sorting", "math"],
+    "concept": "Sort. Radius = max of: (a[0]-0), (L-a[n-1]), max(a[i]-a[i-1])/2 for adjacent pairs.",
+    "brute": { "tc": "O(n log n)", "sc": "O(1)", "code": "// Sorting is the only approach." },
+    "optimal": { "tc": "O(n log n)", "sc": "O(1)", "code": "Arrays.sort(a);\ndouble maxDist=Math.max(a[0],l-a[n-1]);\nfor(int i=1;i<n;i++) maxDist=Math.max(maxDist,(a[i]-a[i-1])/2.0);\nreturn maxDist;" }
+  },
+  {
+    "id": 31, "num": "CF-814A", "name": "An Arithmetic Progression", "cat": "Math", "difficulty": "Easy",
+    "day": 6, "topic": "Sorting & Searching", "sheets": ["Amazon"], "pattern": "Sorting + AP check", "algo": "Sort and Verify", "tags": ["sorting", "math"],
+    "concept": "Sort array. AP difference = (max-min)/(n-1). Exactly one element missing: find and add it.",
+    "brute": { "tc": "O(n log n)", "sc": "O(1)", "code": "// Sort then check each gap." },
+    "optimal": { "tc": "O(n log n)", "sc": "O(1)", "code": "Arrays.sort(a);\nint d=(a[n-1]-a[0])/(n-1);\nfor(int i=1;i<n;i++){\n  if(a[i]-a[i-1]==2*d) return a[i]-d;\n}\nreturn -1; // or a[0]-d or a[n-1]+d" }
+  },
+  {
+    "id": 32, "num": "CF-732A", "name": "Buy a Shovel", "cat": "Math", "difficulty": "Easy",
+    "day": 6, "topic": "Sorting & Searching", "sheets": ["CodeForces"], "pattern": "Math/Divisibility", "algo": "Greedy Coin", "tags": ["math", "greedy"],
+    "concept": "Find minimum k where k×cost leaves no change (cost×k mod coins = 0, coins=1,5,10). Check coins=10 first.",
+    "brute": { "tc": "O(n)", "sc": "O(1)", "code": "// Iterate k from 1 to n." },
+    "optimal": { "tc": "O(1)", "sc": "O(1)", "code": "// price ends in 0: k=1\n// price ends in 5: k=2\n// otherwise: k=10/(gcd(10,price%10))" }
+  },
+  {
+    "id": 33, "num": "CF-1015C", "name": "Songs Compression", "cat": "1D Array", "difficulty": "Medium",
+    "day": 6, "topic": "Sorting & Searching", "sheets": ["Amazon"], "pattern": "Greedy Compression", "algo": "Sort by Gain", "tags": ["greedy", "sorting"],
+    "concept": "Each song can be compressed by (a[i]-b[i]). Sort by compression gain descending. Greedily compress until fits.",
+    "brute": { "tc": "O(n!)", "sc": "O(1)", "code": "// Try all compression orders." },
+    "optimal": { "tc": "O(n log n)", "sc": "O(n)", "code": "int[] gain=new int[n];\nfor(int i=0;i<n;i++) gain[i]=a[i]-b[i];\nArrays.sort(gain);\n// Apply largest gains first until sum<=m" }
+  },
+  {
+    "id": 34, "num": "CF-831A", "name": "Unimodal Array", "cat": "1D Array", "difficulty": "Easy",
+    "day": 6, "topic": "Sorting & Searching", "sheets": ["Amazon"], "pattern": "State Machine", "algo": "Phase Tracking", "tags": ["arrays"],
+    "concept": "Check 3 phases: non-decreasing → strictly up → non-increasing. State machine: phase can only go 0→1→2, never backwards.",
+    "brute": { "tc": "O(n)", "sc": "O(1)", "code": "// Brute same as optimal." },
+    "optimal": { "tc": "O(n)", "sc": "O(1)", "code": "int phase=0;\nfor(int i=1;i<n;i++){\n  if(a[i]>a[i-1]&&phase==2) return \"NO\";\n  if(a[i]<a[i-1]&&phase==0) return \"NO\";\n  if(a[i]==a[i-1]&&phase==1) phase=2;\n  if(a[i]>a[i-1]) phase=1;\n  if(a[i]<a[i-1]) phase=2;\n}\nreturn \"YES\";" }
+  },
+  {
+    "id": 35, "num": "CF-621B", "name": "Wet Shark and Bishops", "cat": "Math", "difficulty": "Medium",
+    "day": 6, "topic": "Sorting & Searching", "sheets": ["Amazon"], "pattern": "Diagonal Hashing", "algo": "HashMap on Diagonals", "tags": ["math", "hashmap"],
+    "concept": "Bishops attack on same diagonal. Group by (r-c) for '/' diagonals and (r+c) for '\\' diagonals. Count pairs within each group: C(k,2).",
+    "brute": { "tc": "O(n²)", "sc": "O(1)", "code": "// Compare all pairs." },
+    "optimal": { "tc": "O(n)", "sc": "O(n)", "code": "Map<Long,Long> d1=new HashMap<>(),d2=new HashMap<>();\nfor(int[] b:bishops){\n  d1.merge((long)b[0]-b[1],1L,Long::sum);\n  d2.merge((long)b[0]+b[1],1L,Long::sum);\n}\nlong ans=0;\nfor(long v:d1.values()) ans+=v*(v-1)/2;\nfor(long v:d2.values()) ans+=v*(v-1)/2;" }
+  },
+  {
+    "id": 36, "num": "CF-580A", "name": "Kefa and First Steps", "cat": "1D Array", "difficulty": "Easy",
+    "day": 7, "topic": "Strings & Characters", "sheets": ["CodeForces"], "pattern": "Sliding Window", "algo": "Fixed Condition Window", "tags": ["sliding window", "arrays"],
+    "concept": "Longest subarray with at most K distinct salary values. Variable window: shrink when distinct count > K.",
+    "brute": { "tc": "O(n²)", "sc": "O(1)", "code": "// All subarrays." },
+    "optimal": { "tc": "O(n)", "sc": "O(K)", "code": "Map<Integer,Integer> freq=new HashMap<>();\nint l=0,max=0;\nfor(int r=0;r<n;r++){\n  freq.merge(a[r],1,Integer::sum);\n  while(freq.size()>k) {\n    int v=a[l++];\n    freq.merge(v,-1,Integer::sum);\n    if(freq.get(v)==0) freq.remove(v);\n  }\n  max=Math.max(max,r-l+1);\n}" }
+  },
+  {
+    "id": 37, "num": "CF-59A", "name": "Word", "cat": "String", "difficulty": "Easy",
+    "day": 7, "topic": "Strings & Characters", "sheets": ["Amazon"], "pattern": "String Frequency", "algo": "Count and Compare", "tags": ["string"],
+    "concept": "Count upper and lower case letters. If more uppercase: convert all to upper; else all to lower. Tie → lowercase.",
+    "brute": { "tc": "O(n)", "sc": "O(1)", "code": "// Single pass count." },
+    "optimal": { "tc": "O(n)", "sc": "O(1)", "code": "int up=0,lo=0;\nfor(char c:s.toCharArray()){\n  if(Character.isUpperCase(c)) up++; else lo++;\n}\nreturn up>lo?s.toUpperCase():s.toLowerCase();" }
+  },
+  {
+    "id": 38, "num": "CF-339B", "name": "Xenia and Tree", "cat": "String", "difficulty": "Easy",
+    "day": 7, "topic": "Strings & Characters", "sheets": ["Amazon"], "pattern": "String Comparison", "algo": "Greedy Match", "tags": ["string", "greedy"],
+    "concept": "Check if string b can be made from string a by deleting characters (subsequence). Classic two-pointer subsequence check.",
+    "brute": { "tc": "O(n×m)", "sc": "O(1)", "code": "// Try all orderings." },
+    "optimal": { "tc": "O(n)", "sc": "O(1)", "code": "int j=0;\nfor(int i=0;i<a.length()&&j<b.length();i++){\n  if(a.charAt(i)==b.charAt(j)) j++;\n}\nreturn j==b.length();" }
+  },
+  {
+    "id": 39, "num": "CF-828B", "name": "Black Square", "cat": "Math", "difficulty": "Easy",
+    "day": 7, "topic": "Strings & Characters", "sheets": ["Amazon"], "pattern": "Math Formula", "algo": "Direct Calculation", "tags": ["math"],
+    "concept": "Black cells needed = n - (total white cells already present). Direct arithmetic.",
+    "brute": { "tc": "O(1)", "sc": "O(1)", "code": "// Single formula." },
+    "optimal": { "tc": "O(1)", "sc": "O(1)", "code": "// answer = n*n - (n * 1 white per row used)\n// Read constraints carefully for exact formula" }
+  },
+  {
+    "id": 40, "num": "CF-1433C", "name": "Dominant Piranha", "cat": "1D Array", "difficulty": "Easy",
+    "day": 7, "topic": "Strings & Characters", "sheets": ["CodeForces"], "pattern": "Greedy Max", "algo": "Find Max Adjacent", "tags": ["greedy", "arrays"],
+    "concept": "Piranha with max size wins. Among max-sized piranhas, pick one that has a smaller neighbor (it can eat first). That index wins.",
+    "brute": { "tc": "O(n)", "sc": "O(1)", "code": "// Find max, check adjacency." },
+    "optimal": { "tc": "O(n)", "sc": "O(1)", "code": "int max=Arrays.stream(a).max().getAsInt();\nfor(int i=0;i<n;i++){\n  if(a[i]==max){\n    if((i>0&&a[i-1]<max)||(i<n-1&&a[i+1]<max)) return i+1;\n  }\n}" }
+  },
+  {
+    "id": 41, "num": "CF-734B", "name": "Sleepy Game", "cat": "Graph", "difficulty": "Medium",
+    "day": 8, "topic": "Graph & BFS/DFS", "sheets": ["Amazon"], "pattern": "BFS Shortest Path", "algo": "BFS on Grid", "tags": ["bfs", "graph"],
+    "concept": "Find shortest path in unweighted graph/grid using BFS. Level-by-level traversal guarantees minimum steps.",
+    "brute": { "tc": "O(V²)", "sc": "O(V)", "code": "// DFS with path tracking." },
+    "optimal": { "tc": "O(V+E)", "sc": "O(V)", "code": "Queue<int[]> q=new LinkedList<>();\nq.add(new int[]{src,0});\nboolean[] vis=new boolean[n];\nwhile(!q.isEmpty()){\n  int[] cur=q.poll();\n  for(int nb:adj[cur[0]]){\n    if(!vis[nb]){vis[nb]=true;q.add(new int[]{nb,cur[1]+1});}\n  }\n}" }
+  },
+  {
+    "id": 42, "num": "CF-580C", "name": "Kefa and Park", "cat": "Graph", "difficulty": "Medium",
+    "day": 8, "topic": "Graph & BFS/DFS", "sheets": ["Amazon"], "pattern": "DFS Tree Walk", "algo": "DFS with State", "tags": ["dfs", "graph", "tree"],
+    "concept": "BFS/DFS from root. Track current chain of cats. If chain > m, prune that subtree. Count leaf nodes reached.",
+    "brute": { "tc": "O(n)", "sc": "O(n)", "code": "// Same — DFS is required." },
+    "optimal": { "tc": "O(n)", "sc": "O(n)", "code": "void dfs(int v,int par,int cats){\n  cats=c[v]==1?cats+1:0;\n  if(cats>m) return;\n  boolean isLeaf=true;\n  for(int u:adj[v]){\n    if(u!=par){isLeaf=false;dfs(u,v,cats);}\n  }\n  if(isLeaf) ans++;\n}" }
+  },
+  {
+    "id": 43, "num": "CF-242C", "name": "King's Path", "cat": "Graph", "difficulty": "Medium",
+    "day": 8, "topic": "Graph & BFS/DFS", "sheets": ["Amazon"], "pattern": "BFS on Implicit Graph", "algo": "BFS with HashMap", "tags": ["bfs", "hashmap"],
+    "concept": "King moves on infinite grid but only to allowed cells. BFS on allowed cells only, stored in a HashSet for O(1) lookup.",
+    "brute": { "tc": "O(V+E)", "sc": "O(V)", "code": "// DFS, but BFS preferred for shortest path." },
+    "optimal": { "tc": "O(V+E)", "sc": "O(V)", "code": "Set<String> allowed=new HashSet<>();\n// BFS with 8-direction king moves\n// Only enqueue cells in allowed set\n// Use dist HashMap for visited+distance" }
+  },
+  {
+    "id": 44, "num": "CF-277A", "name": "Learning Languages", "cat": "Graph", "difficulty": "Easy",
+    "day": 8, "topic": "Graph & BFS/DFS", "sheets": ["Amazon"], "pattern": "Union-Find (DSU)", "algo": "Connected Components", "tags": ["dsu", "graph"],
+    "concept": "People sharing a language are connected. Count connected components among people using DSU. Answer = components - 1 (or 1 if no languages known).",
+    "brute": { "tc": "O(n²)", "sc": "O(n)", "code": "// Adjacency matrix BFS." },
+    "optimal": { "tc": "O(n×m×α(n))", "sc": "O(n)", "code": "// DSU union people who share a language\n// via language nodes as intermediate\nint components=countComponents()-1;\nreturn components;" }
+  },
+  {
+    "id": 45, "num": "CF-1547B", "name": "Alphabetical Strings", "cat": "String", "difficulty": "Medium",
+    "day": 9, "topic": "Stack & Monotonic", "sheets": ["Amazon"], "pattern": "Two Pointer from Ends", "algo": "Deque/Two-End Check", "tags": ["string", "two pointer"],
+    "concept": "Valid if we can build string by alternately taking from left and right ends such that character values are 1,2,...,n.",
+    "brute": { "tc": "O(n!)", "sc": "O(n)", "code": "// All permutations." },
+    "optimal": { "tc": "O(n)", "sc": "O(n)", "code": "int l=0,r=n-1,cur=n;\nwhile(l<=r){\n  if(s.charAt(r)-'a'+1==cur){r--;cur--;}\n  else if(s.charAt(l)-'a'+1==cur){l++;cur--;}\n  else return \"No\";\n}\nreturn \"Yes\";" }
+  },
+  {
+    "id": 46, "num": "CF-500B", "name": "New Year Permutation", "cat": "Math", "difficulty": "Medium",
+    "day": 9, "topic": "Stack & Monotonic", "sheets": ["Amazon"], "pattern": "Combinatorics", "algo": "DP + Factorial", "tags": ["math", "dp"],
+    "concept": "Swappable elements form groups. Within each group, count valid sorted arrangements. Use DP for group sizes.",
+    "brute": { "tc": "O(n!)", "sc": "O(1)", "code": "// All permutations." },
+    "optimal": { "tc": "O(n log n)", "sc": "O(n)", "code": "// Find connected swap groups\n// For each group of size k: ways=2^(k/2)\n// Multiply all group ways" }
+  },
+  {
+    "id": 47, "num": "CF-1551B", "name": "Wonderful Coloring", "cat": "String", "difficulty": "Easy",
+    "day": 9, "topic": "Stack & Monotonic", "sheets": ["CodeForces"], "pattern": "Sorting + Greedy Pairing", "algo": "Sort and Match", "tags": ["greedy", "sorting"],
+    "concept": "Sort pairs of (value, index). Greedily assign color 1 to first half and color 2 to second half of each pair. Odd-occurring elements are uncolored.",
+    "brute": { "tc": "O(n log n)", "sc": "O(n)", "code": "// Sort and pair." },
+    "optimal": { "tc": "O(n log n)", "sc": "O(n)", "code": "// Sort by (value,index)\n// Pair consecutive equal values\n// Assign colors ensuring index order" }
+  },
+  {
+    "id": 48, "num": "CF-1475C", "name": "Strange Beauty", "cat": "1D Array", "difficulty": "Medium",
+    "day": 9, "topic": "Stack & Monotonic", "sheets": ["Amazon"], "pattern": "LIS Variant", "algo": "DP on Divisibility", "tags": ["dp", "math"],
+    "concept": "Find longest subsequence where every consecutive pair a[i] divides a[i+1]. dp[v] = longest sequence ending at value v.",
+    "brute": { "tc": "O(n²)", "sc": "O(n)", "code": "// Check all pairs." },
+    "optimal": { "tc": "O(n√MAX)", "sc": "O(MAX)", "code": "int[] dp=new int[MAX+1];\nfor(int x:a){\n  dp[x]=1;\n  for(int d=1;d*d<=x;d++){\n    if(x%d==0){\n      dp[x]=Math.max(dp[x],dp[d]+1);\n      if(d!=x/d) dp[x]=Math.max(dp[x],dp[x/d]+1);\n    }\n  }\n}\nreturn Arrays.stream(dp).max().getAsInt();" }
+  },
+  {
+    "id": 49, "num": "CF-1543B", "name": "Customising the Track", "cat": "Math", "difficulty": "Medium",
+    "day": 10, "topic": "Advanced Patterns", "sheets": ["Amazon"], "pattern": "Math + Greedy", "algo": "Equal Distribution", "tags": ["math", "greedy"],
+    "concept": "Count total operations to make all elements equal. If total sum divisible by n, answer = sum/n applied cleverly. Count elements above and below target.",
+    "brute": { "tc": "O(n²)", "sc": "O(1)", "code": "// Simulate operations." },
+    "optimal": { "tc": "O(n)", "sc": "O(1)", "code": "long sum=0;\nfor(int x:a) sum+=x;\nif(sum%n!=0) return -1;\nlong target=sum/n,ops=0;\nfor(int x:a) if(x>target) ops+=(x-target);\nreturn ops;" }
+  },
+  {
+    "id": 50, "num": "CF-1201C", "name": "Maximum Median", "cat": "1D Array", "difficulty": "Hard",
+    "day": 10, "topic": "Advanced Patterns", "sheets": ["Amazon", "Google"], "pattern": "Binary Search on Answer", "algo": "Greedy Feasibility", "tags": ["binary search", "greedy"],
+    "concept": "Binary search on median value m. Check feasibility: count elements >=m; if we need to increment, greedily add to smallest elements >=m-1.",
+    "brute": { "tc": "O(n×MAX)", "sc": "O(1)", "code": "// Try all median values." },
+    "optimal": { "tc": "O(n log n log MAX)", "sc": "O(1)", "code": "Arrays.sort(a);\nint lo=a[n/2],hi=2000000000;\nwhile(lo<hi){\n  int mid=lo+(hi-lo+1)/2;\n  long ops=0;\n  for(int i=n/2;i<n;i++) if(a[i]<mid) ops+=mid-a[i];\n  if(ops<=k) lo=mid; else hi=mid-1;\n}\nreturn lo;" }
+  }
+
 ]; // END OF QUESTIONS ARRAY
 
 
@@ -2636,7 +2988,7 @@ const ALL_PATS   = ["All",...new Set(QUESTIONS.map(q=>q.pattern))].sort();
 /* ═══════════════════════════════════════════════════════════════════════
    COMPONENT
 ═══════════════════════════════════════════════════════════════════════ */
-export default function Arrays() {
+export default function Arrays({ theme, toggleTheme }) {
   const [tab, setTab]           = useState("overview");
   const [solved, setSolved]     = useState(loadSolved);
   const [search, setSearch]     = useState("");
@@ -2728,10 +3080,10 @@ export default function Arrays() {
   );
 
   return (
-    <div style={{minHeight:'100vh',background:'var(--bg-base)',color:'var(--text-primary)',fontFamily:"'Inter',-apple-system,'SF Pro Display',system-ui,sans-serif"}}>
+    <div style={{minHeight:'100vh',background:'var(--bg-base)',color:'var(--text-primary)',fontFamily:"'Outfit','Inter',-apple-system,system-ui,sans-serif"}}>
 
       {/* ── HEADER ── */}
-      <div style={{borderBottom:'1px solid var(--border)',background:'linear-gradient(180deg,rgba(36,36,36,0.9) 0%,transparent 100%)',backdropFilter:'blur(20px)'}}>
+      <div style={{borderBottom:'1px solid var(--border)',background:'var(--bg-glass)',backdropFilter:'blur(20px)',WebkitBackdropFilter:'blur(20px)'}}>
         <div style={{maxWidth:'1280px',margin:'0 auto',padding:'28px 20px'}}>
           {/* macOS traffic lights */}
           <div className="macos-dots" style={{marginBottom:'16px'}}>
@@ -2741,32 +3093,46 @@ export default function Arrays() {
           </div>
           <div style={{display:'flex',flexWrap:'wrap',alignItems:'center',gap:'8px',marginBottom:'12px'}}>
             <span className="badge badge-accent" style={{textTransform:'uppercase',letterSpacing:'0.08em'}}>Amazon SDE1 Complete Prep</span>
-            <span className="badge" style={{color:'var(--green)',background:'var(--green-soft)',borderColor:'rgba(74,222,128,0.3)'}}>
+            <span className="badge" style={{color:'var(--green)',background:'var(--green-soft)',borderColor:'rgba(16,185,129,0.3)'}}>
               {stats.solved}/{stats.total} Solved — {Math.round(stats.solved/stats.total*100)}%
             </span>
             <span className="badge badge-muted">☁️ Auto-saved</span>
           </div>
-          <h1 style={{fontSize:'clamp(28px,5vw,48px)',fontWeight:800,letterSpacing:'-0.02em',lineHeight:1.1,background:'linear-gradient(135deg,var(--text-primary) 0%,var(--accent) 60%,#e8a285 100%)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text',margin:'0 0 8px'}}>
+          <h1 style={{fontSize:'clamp(28px,5vw,48px)',fontWeight:900,letterSpacing:'-0.03em',lineHeight:1.1,background:'linear-gradient(135deg,var(--navi-green) 0%,#0866FF 60%,var(--navi-green) 100%)',backgroundSize:'200% auto',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text',margin:'0 0 8px',animation:'gradientShift 6s linear infinite'}}>
             DSA Mastery Dashboard
           </h1>
           <p className="font-mono" style={{color:'var(--accent)',fontSize:'13px',fontWeight:600,marginBottom:'16px'}}>
             // Arrays · Strings · {stats.total} Questions · 12 Patterns · 12 Algorithms · 10-Day Plan
           </p>
-          <div style={{height:'4px',background:'var(--bg-card)',borderRadius:'4px',maxWidth:'480px',overflow:'hidden'}}>
+          <div style={{height:'4px',background:'var(--border)',borderRadius:'4px',maxWidth:'480px',overflow:'hidden'}}>
             <div className="progress-bar" style={{height:'100%',borderRadius:'4px',width:`${(stats.solved/stats.total)*100}%`,transition:'width 0.7s cubic-bezier(0.4,0,0.2,1)'}}/>
           </div>
         </div>
       </div>
 
       {/* ── NAV ── */}
-      <div style={{position:'sticky',top:0,zIndex:50,background:'rgba(26,26,26,0.92)',backdropFilter:'blur(24px)',WebkitBackdropFilter:'blur(24px)',borderBottom:'1px solid var(--border)'}}>
-        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px',display:'flex',overflowX:'auto'}} className="scrollbar-hide">
-          {TABS.map(t => (
-            <button key={t.id} onClick={() => setTab(t.id)}
-              className={`tab-item${tab===t.id?' active':''}`}>
-              {t.label}
+      <div style={{position:'sticky',top:0,zIndex:50,background:'var(--bg-glass)',backdropFilter:'blur(24px)',WebkitBackdropFilter:'blur(24px)',borderBottom:'1px solid var(--border)'}}>
+        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px',display:'flex',justifyContent:'space-between',alignItems:'center',gap:'12px'}} className="scrollbar-hide">
+          <div style={{display:'flex',overflowX:'auto',flex:1}} className="scrollbar-hide">
+            {TABS.map(t => (
+              <button key={t.id} onClick={() => setTab(t.id)}
+                className={`tab-item${tab===t.id?' active':''}`}>
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Quick Action Navigation & Theme Toggling */}
+          <div style={{display:'flex',alignItems:'center',gap:'8px',flexShrink:0,padding:'8px 0'}}>
+            {/* Theme Toggle */}
+            <button onClick={toggleTheme} className="btn" title="Toggle Theme" style={{padding:'8px',borderRadius:'8px',background:'var(--bg-elevated)',borderColor:'var(--border)',color:'var(--text-secondary)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+              {theme === "dark" ? <Sun size={14}/> : <Moon size={14}/>}
             </button>
-          ))}
+            {/* Return Portal */}
+            <a href="#home" className="btn btn-accent" style={{fontSize:'12px',fontWeight:700,padding:'6px 12px',borderRadius:'8px',textDecoration:'none',display:'inline-flex',alignItems:'center',gap:'4px'}}>
+              🏠 Home
+            </a>
+          </div>
         </div>
       </div>
 
@@ -2849,37 +3215,36 @@ export default function Arrays() {
         {/* ════════════ 10-DAY PLAN ════════════ */}
         {tab==="plan" && (
           <div>
-            <div className="bg-red-500/5 border border-red-500/20 rounded-xl p-4 mb-6">
-              <p className="text-red-300 font-bold text-sm">🔴 Protocol: 8-9 hrs/day. Theory 2h → Solve 5-6 problems 4h → Revise all 1.5h → Write templates from memory 1h. ZERO skipping.</p>
+            <div style={{background:'var(--red-soft)',border:'1px solid var(--red)',borderRadius:'var(--radius-lg)',padding:'16px',marginBottom:'24px',opacity:0.8}}>
+              <p style={{color:'var(--red)',fontWeight:800,fontSize:'14px'}}>🔴 Protocol: 8-9 hrs/day. Theory 2h → Solve 5-6 problems 4h → Revise all 1.5h → Write templates from memory 1h. ZERO skipping.</p>
             </div>
-            <div className="grid lg:grid-cols-2 gap-4">
+            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(400px,1fr))',gap:'16px'}}>
               {PLAN.map(d=>(
-                <div key={d.day} className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+                <div key={d.day} className="collapse-card">
                   <button onClick={()=>setOpenDay(openDay===d.day?null:d.day)}
-                    className="w-full p-5 flex items-center gap-3 hover:bg-slate-800/30 transition-colors text-left">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center font-black text-lg border shrink-0"
-                      style={{background:`${d.color}15`,borderColor:`${d.color}40`,color:d.color}}>D{d.day}</div>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-bold text-white text-sm truncate">{d.title}</div>
-                      <div className="text-xs font-mono mt-0.5" style={{color:d.color}}>{d.focus} · {d.time}</div>
+                    style={{width:'100%',padding:'20px',display:'flex',alignItems:'center',gap:'16px',background:'transparent',border:'none',cursor:'pointer',textAlign:'left'}}>
+                    <div style={{width:'56px',height:'56px',borderRadius:'16px',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:900,fontSize:'20px',border:'1px solid',background:`${d.color}15`,borderColor:`${d.color}40`,color:d.color,flexShrink:0}}>D{d.day}</div>
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{fontWeight:800,color:'var(--text-primary)',fontSize:'15px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{d.title}</div>
+                      <div className="font-mono" style={{fontSize:'12px',color:d.color,marginTop:'4px'}}>{d.focus} · {d.time}</div>
                     </div>
-                    <span className="text-slate-500 text-xs">{openDay===d.day?"▲":"▼"}</span>
+                    <span style={{color:'var(--text-secondary)',fontSize:'12px'}}>{openDay===d.day?"▲":"▼"}</span>
                   </button>
                   {openDay===d.day && (
-                    <div className="border-t border-slate-800 p-5 space-y-4">
+                    <div className="fade-in" style={{borderTop:'1px solid var(--border)',padding:'24px',display:'flex',flexDirection:'column',gap:'20px',background:'var(--bg-glass)',backdropFilter:'blur(20px)'}}>
                       <div>
-                        <div className="text-xs font-mono text-slate-500 uppercase tracking-widest mb-2">Theory & Concepts</div>
-                        <ul className="space-y-1">{d.theory.map((t,i)=>
-                          <li key={i} className="text-xs text-slate-300 flex gap-2"><span style={{color:d.color}}>→</span>{t}</li>)}</ul>
+                        <div className="font-mono" style={{fontSize:'11px',color:'var(--text-muted)',textTransform:'uppercase',letterSpacing:'1.5px',marginBottom:'12px'}}>Theory & Concepts</div>
+                        <ul style={{listStyle:'none',padding:0,margin:0,display:'flex',flexDirection:'column',gap:'6px'}}>{d.theory.map((t,i)=>
+                          <li key={i} style={{fontSize:'13px',color:'var(--text-secondary)',display:'flex',gap:'10px'}}><span style={{color:d.color}}>→</span>{t}</li>)}</ul>
                       </div>
                       <div>
-                        <div className="text-xs font-mono text-slate-500 uppercase tracking-widest mb-2">Problems to Solve</div>
-                        <div className="flex flex-wrap gap-1.5">{d.problems.map((p,i)=>
-                          <span key={i} className="text-xs bg-slate-800 border border-slate-700 text-slate-300 px-2 py-0.5 rounded font-mono">{p}</span>)}</div>
+                        <div className="font-mono" style={{fontSize:'11px',color:'var(--text-muted)',textTransform:'uppercase',letterSpacing:'1.5px',marginBottom:'12px'}}>Problems to Solve</div>
+                        <div style={{display:'flex',flexWrap:'wrap',gap:'8px'}}>{d.problems.map((p,i)=>
+                          <span key={i} className="font-mono" style={{fontSize:'12px',background:'var(--bg-hover)',border:'1px solid var(--border)',color:'var(--text-primary)',padding:'4px 10px',borderRadius:'6px'}}>{p}</span>)}</div>
                       </div>
-                      <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-3">
-                        <span className="text-xs font-bold text-amber-400">💡 Key Insight: </span>
-                        <span className="text-xs text-slate-300">{d.insight}</span>
+                      <div style={{background:'var(--amber-soft)',border:'1px solid var(--amber)',borderRadius:'var(--radius-md)',padding:'14px',opacity:0.9}}>
+                        <span style={{fontSize:'12px',fontWeight:800,color:'var(--amber)'}}>💡 Key Insight: </span>
+                        <span style={{fontSize:'13px',color:'var(--text-primary)'}}>{d.insight}</span>
                       </div>
                     </div>
                   )}
