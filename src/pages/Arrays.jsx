@@ -1,19 +1,34 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Sun, Moon } from "lucide-react";
+import { 
+  Sun, Moon, Home, Plus, Trash2, Edit, Download, Upload, 
+  Share2, Search, Filter, CheckCircle, ChevronDown, ChevronUp, 
+  BookOpen, Zap, Target, ShieldCheck, ExternalLink, Copy, Check, Menu, X, Award
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
-/* ─────────────────────────── STORAGE HELPER ─────────────────────────── */
-const LS_KEY = "dsa_solved_v3";
+/* ─────────────────────────── STORAGE HELPERS ─────────────────────────── */
+const LS_SOLVED_KEY = "dsa_solved_v4";
+const LS_CUSTOM_QS_KEY = "dsa_custom_qs_v4";
+
 const loadSolved = () => {
-  try { return new Set(JSON.parse(localStorage.getItem(LS_KEY) || "[]")); }
+  try { return new Set(JSON.parse(localStorage.getItem(LS_SOLVED_KEY) || "[]")); }
   catch { return new Set(); }
 };
 const saveSolved = (set) => {
-  try { localStorage.setItem(LS_KEY, JSON.stringify([...set])); } catch {}
+  try { localStorage.setItem(LS_SOLVED_KEY, JSON.stringify([...set])); } catch {}
 };
 
-/* ─────────────────────────── COLOUR HELPERS ─────────────────────────── */
+const loadCustomQs = () => {
+  try { return JSON.parse(localStorage.getItem(LS_CUSTOM_QS_KEY) || "[]"); }
+  catch { return []; }
+};
+const saveCustomQs = (qs) => {
+  try { localStorage.setItem(LS_CUSTOM_QS_KEY, JSON.stringify(qs)); } catch {}
+};
+
+/* ─────────────────────────── UI HELPERS ─────────────────────────── */
 const diffClasses = (d) =>
   d === "Easy"   ? "badge badge-easy"
   : d === "Medium" ? "badge badge-medium"
@@ -30,6 +45,144 @@ const patColor = (p) => {
   };
   return m[p] || "slate";
 };
+
+const uid = () => Math.random().toString(36).substring(2, 9);
+
+const parseCSV = (text) => {
+  const lines = text.split("\n").filter(l => l.trim());
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(",").map(h => h.trim().toLowerCase());
+  return lines.slice(1).map(line => {
+    const values = line.split(",").map(v => v.trim());
+    const obj = {};
+    headers.forEach((h, i) => obj[h] = values[i]);
+    return obj;
+  });
+};
+
+const exportToCSV = (data, filename) => {
+  if (!data.length) return;
+  const headers = Object.keys(data[0]);
+  const csvRows = [
+    headers.join(","),
+    ...data.map(row => headers.map(h => `"${(row[h] || "").toString().replace(/"/g, '""')}"`).join(","))
+  ];
+  const blob = new Blob([csvRows.join("\n")], { type: "text/csv" });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.setAttribute("hidden", "");
+  a.setAttribute("href", url);
+  a.setAttribute("download", `${filename}.csv`);
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
+
+/* ─────────────────────────── COMPONENTS ─────────────────────────── */
+
+function DSAForm({ initial, onSave, onClose }) {
+  const [f, setF] = useState(initial || {
+    name: "", num: "LC#", difficulty: "Easy", cat: "1D Array",
+    pattern: "Two Pointer", algo: "", tags: "", concept: "",
+    brute: { tc: "", sc: "", code: "" },
+    optimal: { tc: "", sc: "", code: "", note: "" },
+    sheets: ["Custom"], link: ""
+  });
+
+  const handleSub = (e) => {
+    e.preventDefault();
+    if (!f.name || !f.num) return alert("Name and LC# required");
+    onSave({ ...f, tags: typeof f.tags === 'string' ? f.tags.split(",").map(t => t.trim()) : f.tags });
+  };
+
+  const INP = {
+    width: "100%", padding: "10px 14px", borderRadius: "10px", 
+    border: "1.5px solid var(--border)", background: "var(--bg-elevated)",
+    color: "var(--text-primary)", fontSize: "14px", outline: "none", marginBottom: "12px"
+  };
+
+  const LBL = { fontSize: "11px", fontWeight: 800, color: "var(--text-muted)", 
+    textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "5px", display: "block" };
+
+  return (
+    <form onSubmit={handleSub} style={{ padding: "20px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+        <div>
+          <label style={LBL}>Question Name</label>
+          <input style={INP} value={f.name} onChange={e => setF({ ...f, name: e.target.value })} placeholder="e.g. Two Sum" />
+        </div>
+        <div>
+          <label style={LBL}>Number / ID</label>
+          <input style={INP} value={f.num} onChange={e => setF({ ...f, num: e.target.value })} placeholder="e.g. LC#1" />
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+        <div>
+          <label style={LBL}>Difficulty</label>
+          <select style={INP} value={f.difficulty} onChange={e => setF({ ...f, difficulty: e.target.value })}>
+            {["Easy", "Medium", "Hard"].map(d => <option key={d}>{d}</option>)}
+          </select>
+        </div>
+        <div>
+          <label style={LBL}>Category</label>
+          <select style={INP} value={f.cat} onChange={e => setF({ ...f, cat: e.target.value })}>
+            {["1D Array", "2D Array", "String"].map(c => <option key={c}>{c}</option>)}
+          </select>
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+        <div>
+          <label style={LBL}>Pattern</label>
+          <input style={INP} value={f.pattern} onChange={e => setF({ ...f, pattern: e.target.value })} placeholder="e.g. Two Pointer" />
+        </div>
+        <div>
+          <label style={LBL}>Algorithm</label>
+          <input style={INP} value={f.algo} onChange={e => setF({ ...f, algo: e.target.value })} placeholder="e.g. Binary Search" />
+        </div>
+      </div>
+
+      <label style={LBL}>Concept / Logic</label>
+      <textarea style={{ ...INP, height: "60px", resize: "none" }} value={f.concept} onChange={e => setF({ ...f, concept: e.target.value })} />
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px" }}>
+        <div style={{ padding: "12px", background: "rgba(239, 68, 68, 0.05)", borderRadius: "12px", border: "1px solid rgba(239, 68, 68, 0.1)" }}>
+          <label style={{ ...LBL, color: "var(--red)" }}>Brute Force</label>
+          <input style={INP} placeholder="TC (e.g. O(n²))" value={f.brute.tc} onChange={e => setF({ ...f, brute: { ...f.brute, tc: e.target.value } })} />
+          <textarea style={{ ...INP, height: "80px", fontFamily: "monospace" }} placeholder="Java Code" value={f.brute.code} onChange={e => setF({ ...f, brute: { ...f.brute, code: e.target.value } })} />
+        </div>
+        <div style={{ padding: "12px", background: "rgba(34, 197, 94, 0.05)", borderRadius: "12px", border: "1px solid rgba(34, 197, 94, 0.1)" }}>
+          <label style={{ ...LBL, color: "var(--green)" }}>Optimal Solution</label>
+          <input style={INP} placeholder="TC (e.g. O(n))" value={f.optimal.tc} onChange={e => setF({ ...f, optimal: { ...f.optimal, tc: e.target.value } })} />
+          <textarea style={{ ...INP, height: "80px", fontFamily: "monospace" }} placeholder="Java Code" value={f.optimal.code} onChange={e => setF({ ...f, optimal: { ...f.optimal, code: e.target.value } })} />
+        </div>
+      </div>
+
+      <div style={{ marginTop: "20px", display: "flex", gap: "10px" }}>
+        <button type="button" onClick={onClose} style={{ flex: 1, padding: "12px", borderRadius: "12px", border: "1.5px solid var(--border)", background: "transparent", color: "var(--text-secondary)", fontWeight: 700 }}>Cancel</button>
+        <button type="submit" style={{ flex: 2, padding: "12px", borderRadius: "12px", border: "none", background: "var(--accent)", color: "#fff", fontWeight: 800 }}>Save Question</button>
+      </div>
+    </form>
+  );
+}
+
+function DSAModal({ title, onClose, children }) {
+  return (
+    <div style={{ position: "fixed", inset: 0, zIndex: 10000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={onClose}
+        style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }} />
+      <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+        style={{ position: "relative", width: "100%", maxWidth: "600px", background: "var(--bg-card)", borderRadius: "24px", border: "1px solid var(--border)", boxShadow: "0 20px 50px rgba(0,0,0,0.3)", overflow: "hidden" }}>
+        <div style={{ padding: "20px 24px", borderBottom: "1px solid var(--border)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <h3 style={{ margin: 0, fontWeight: 900, fontSize: "18px", color: "var(--text-primary)" }}>{title}</h3>
+          <button onClick={onClose} style={{ background: "none", border: "none", color: "var(--text-muted)" }}><X size={20} /></button>
+        </div>
+        <div style={{ maxHeight: "80vh", overflowY: "auto" }}>{children}</div>
+      </motion.div>
+    </div>
+  );
+}
 
 /* ═══════════════════════════════════════════════════════════════════════
    MASTER QUESTION DATABASE  (Arrays + 2D Arrays + Strings)
@@ -2925,25 +3078,6 @@ int maxProd(int[] a){
    code:`// Prefix sum — O(1) range query after O(n) build
 int[] pre=new int[n+1];
 for(int i=0;i<n;i++) pre[i+1]=pre[i]+arr[i];
-int rangeSum=pre[r+1]-pre[l]; // sum[l..r] inclusive
-// Difference array — O(1) range update
-int[] diff=new int[n+2];
-diff[l]+=val; diff[r+1]-=val; // add val to [l,r]
-// Reconstruct: cumulative sum of diff = actual values
-// Subarray sum=k: map.put(0,1); prefix=0; cnt+=map.get(prefix-k,0); map.put(prefix,...);`},
-  {name:"Monotonic Stack",icon:"📚",tc:"O(n) amortized",sc:"O(n)",
-   when:"Next greater/smaller. Histogram area. Trap water.",
-   code:`// Next Greater Element (decreasing stack of indices)
-int[] nextGreater(int[] arr){
-    int n=arr.length; int[] res=new int[n]; Arrays.fill(res,-1);
-    Deque<Integer> st=new ArrayDeque<>();
-    for(int i=0;i<n;i++){
-        while(!st.isEmpty()&&arr[i]>arr[st.peek()])
-            res[st.pop()]=arr[i];
-        st.push(i);
-    }return res;}
-// Histogram: push index, pop when smaller bar seen
-// Width = st.isEmpty()?i:i-st.peek()-1
 // Add sentinel 0 at end to force flush all remaining`},
   {name:"Floyd's Cycle Detection",icon:"🐢",tc:"O(n)",sc:"O(1)",
    when:"Find duplicate in [1..n+1] array. Detect cycle in linked list.",

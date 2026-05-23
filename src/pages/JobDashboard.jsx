@@ -4,7 +4,8 @@ import {
   Eye, EyeOff, Copy, X, TrendingUp, CheckCircle2, XCircle, MessageSquare,
   Mail, Send, FileText, Menu, Bell, FileSpreadsheet, Zap, Target, Award,
   Building2, User, Globe, Download, Rocket, BarChart3, Clock, AlertCircle,
-  ThumbsUp, ThumbsDown, Minus, Activity, Home, Link, ExternalLink, Sun, Moon
+  ThumbsUp, ThumbsDown, Minus, Activity, Home, Link, ExternalLink, Sun, Moon,
+  Hand
 } from "lucide-react";
 
 /* ─── UTILS ─── */
@@ -22,21 +23,9 @@ const STATUS_CFG = {
   Withdrawn: { color: "var(--status-Withdrawn)", light: "var(--status-Withdrawn-light)", icon: Minus },
 };
 
-const SEED_JOBS = [
-  { id:uid(), company:"Google",   role:"SDE II",            status:"Interview", date:"2026-05-01", resume:"google_sde2.pdf",   notes:"L4 · 4 rounds · ₹45 LPA", location:"Bangalore", jobLink:"https://careers.google.com" },
-  { id:uid(), company:"Flipkart", role:"Frontend Engineer", status:"Applied",   date:"2026-05-10", resume:"flipkart_fe.pdf",   notes:"Referred by Rahul",          location:"Bangalore", jobLink:"https://flipkartcareers.com" },
-  { id:uid(), company:"PhonePe",  role:"React Developer",   status:"Screening", date:"2026-05-15", resume:"phonepe_react.pdf", notes:"HR call scheduled",           location:"Pune",      jobLink:"https://phonepe.com/careers" },
-  { id:uid(), company:"Paytm",    role:"Full Stack Dev",    status:"Offered",   date:"2026-04-20", resume:"paytm_fsd.pdf",    notes:"₹28 LPA · accepted",          location:"Noida",     jobLink:"https://paytm.com/careers" },
-  { id:uid(), company:"Zomato",   role:"SDE I",             status:"Rejected",  date:"2026-04-25", resume:"zomato_sde1.pdf",  notes:"DS round failed",              location:"Gurgaon",   jobLink:"" },
-  { id:uid(), company:"Swiggy",   role:"Backend Engineer",  status:"Interview", date:"2026-05-18", resume:"swiggy_be.pdf",    notes:"System design round",          location:"Bangalore", jobLink:"https://careers.swiggy.com" },
-];
+const SEED_JOBS = [];
 
-const SEED_ACCOUNTS = [
-  { id:uid(), company:"Naukri",    website:"naukri.com",    email:"me@gmail.com", password:"naukri@2024",  notes:"Premium · 3 months",  category:"Job Portal" },
-  { id:uid(), company:"LinkedIn",  website:"linkedin.com",  email:"me@gmail.com", password:"Li#Secure99",  notes:"500+ connections",     category:"Professional" },
-  { id:uid(), company:"Instahyre", website:"instahyre.com", email:"me@yahoo.com", password:"insta#456",    notes:"Profile: Active",      category:"Job Portal" },
-  { id:uid(), company:"Wellfound", website:"wellfound.com", email:"me@gmail.com", password:"wf@startup22", notes:"Startup jobs",          category:"Job Portal" },
-];
+const SEED_ACCOUNTS = [];
 
 /* ─── CSV / EXCEL / PDF ─── */
 const escCSV = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
@@ -637,24 +626,7 @@ function Sidebar({ active, setActive, onClose }) {
               <div style={{ fontSize:9, color:C.sub, fontWeight:700, letterSpacing:.8 }}>PRO DASHBOARD</div>
             </div>
           </div>
-          <a href="#home" title="Return to Portal" style={{
-            background: "var(--bg-elevated)",
-            border: `1px solid ${C.border}`,
-            borderRadius: "9px",
-            width: "30px",
-            height: "30px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "rgba(255,255,255,0.7)",
-            cursor: "pointer",
-            transition: "all 0.15s ease",
-            textDecoration: "none",
-          }}
-          onMouseEnter={e=>e.currentTarget.style.color="#00D09C"}
-          onMouseLeave={e=>e.currentTarget.style.color="rgba(255,255,255,0.7)"}>
-            <Home size={15}/>
-          </a>
+         
         </div>
         {onClose && (
           <button onClick={onClose} style={{ position:"absolute", top:22, right:14,
@@ -683,23 +655,7 @@ function Sidebar({ active, setActive, onClose }) {
           );
         })}
       </div>
-      {/* Profile */}
-      <div style={{ padding:"0 10px 20px", flexShrink:0 }}>
-        <div style={{ borderRadius:16, background:"rgba(108,92,231,.18)", padding:"12px 14px",
-          border:"1px solid rgba(108,92,231,.24)" }}>
-          <div style={{ display:"flex", alignItems:"center", gap:9 }}>
-            <div style={{ width:34, height:34, borderRadius:11,
-              background:`linear-gradient(135deg,${C.brand},${C.accent})`,
-              display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-              <User size={16} color="#fff" strokeWidth={2}/>
-            </div>
-            <div>
-              <div style={{ fontSize:13, fontWeight:700, color:"#fff" }}>My Profile</div>
-              <div style={{ fontSize:10, color:"rgba(255,255,255,.38)", fontWeight:600 }}>Job Seeker</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      
     </div>
   );
 }
@@ -726,8 +682,8 @@ function DashboardPage({ jobs, accounts }) {
         boxShadow:`0 12px 40px ${C.brand}40` }}>
         <div style={{ position:"absolute", top:-24, right:-24, width:140, height:140, borderRadius:"50%", background:"rgba(255,255,255,.07)" }}/>
         <div style={{ position:"absolute", bottom:-30, right:60, width:90, height:90, borderRadius:"50%", background:"rgba(255,255,255,.05)" }}/>
-        <div style={{ fontWeight:900, fontSize:20, color:"#fff", letterSpacing:-.3, position:"relative" }}>
-          Welcome back! 👋
+        <div style={{ fontWeight:900, fontSize:20, color:"#fff", letterSpacing:-.3, position:"relative", display:"flex", alignItems:"center", gap:8 }}>
+          Welcome back! <Hand size={20} color="#fff" />
         </div>
         <div style={{ fontSize:13, color:"rgba(255,255,255,.75)", marginTop:5, position:"relative", fontWeight:500 }}>
           <strong style={{color:"#fff"}}>{s.active}</strong> active applications ·{" "}
@@ -1351,58 +1307,69 @@ function BottomNav({ active, setActive }) {
 }
 
 /* ═══ TOP BAR (glassmorphism) ═══ */
-function TopBar({ page, theme, toggleTheme, onHamburger }) {
-  const titles = { dashboard:"Dashboard", jobs:"Job Applications", accounts:"My Accounts", analytics:"Analytics" };
-  const PAGE_ICONS = { dashboard:"🏠", jobs:"💼", accounts:"🔐", analytics:"📊" };
+function TopBar({ page, onHamburger, theme, toggleTheme }) {
+  const titles = { dashboard: "Overview", jobs: "Job Pipeline", accounts: "Credential Vault", analytics: "Insights" };
   return (
-    <div className="topbar" style={{
-      background: `${C.surface}EE`,
-      backdropFilter: "blur(20px) saturate(1.6)",
-      WebkitBackdropFilter: "blur(20px) saturate(1.6)",
-      borderBottom: `1px solid ${C.border}`,
-      padding: "12px 22px",
-      display: "flex", alignItems: "center", justifyContent: "space-between",
-      boxShadow: "0 1px 0 var(--jt-border), 0 2px 12px rgba(0,0,0,.06)",
+    <header className="topbar" style={{
+      padding: "16px 22px", background: C.bg,
+      borderBottom: `1px solid ${C.border}`, display: "flex", justifyContent: "space-between", alignItems: "center"
     }}>
-      <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-        <button className="hamburger icobtn btn" onClick={onHamburger}
-          style={{ width:36, height:36, background:C.bg, border:`1px solid ${C.border}`,
-            borderRadius:11, color:C.sub, display:"none", flexShrink:0 }}>
-          <Menu size={17}/>
+      <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+        <button onClick={onHamburger} className="icobtn btn hamburger"
+          style={{
+            width: 44, height: 44, background: C.brandSoft, border: `1.5px solid ${C.brandMid}`,
+            color: C.brand, display: "none"
+          }}>
+          <Menu size={22} />
         </button>
         <div>
-          <div style={{ fontWeight:800, fontSize:15, color:C.text, letterSpacing:-.3, display:"flex", alignItems:"center", gap:7 }}>
-            <span>{PAGE_ICONS[page]||"🏠"}</span>
-            {titles[page]||"Dashboard"}
-          </div>
-          <div style={{ fontSize:10, color:C.muted, fontWeight:500 }}>
-            {new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}
+          <div style={{ fontSize: 10, color: C.brand, fontWeight: 900, textTransform: "uppercase", letterSpacing: 1 }}>{titles[page]}</div>
+          <div style={{ fontWeight: 800, fontSize: 15, color: C.text }}>{titles[page]}</div>
+          <div style={{ fontSize: 10, color: C.muted, fontWeight: 500 }}>
+            {new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
           </div>
         </div>
       </div>
-      <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         {/* Theme Toggle */}
         <button className="icobtn btn" onClick={toggleTheme} title="Toggle Theme"
-          style={{ width:36, height:36, background:C.bg, border:`1px solid ${C.border}`,
-            borderRadius:11, color:C.sub, display:"flex", alignItems:"center", justifyContent:"center",
-            transition:"all .2s" }}
-          onMouseEnter={e=>{ e.currentTarget.style.borderColor=C.brand; e.currentTarget.style.color=C.brand; }}
-          onMouseLeave={e=>{ e.currentTarget.style.borderColor=C.border; e.currentTarget.style.color=C.sub; }}
+          style={{
+            width: 44, height: 44, background: C.surface, border: `1.5px solid ${C.border}`,
+            color: C.sub, display: "flex", alignItems: "center", justifyContent: "center",
+            transition: "all .2s"
+          }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = C.brand; e.currentTarget.style.color = C.brand; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.sub; }}
         >
-          {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
+          {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
         </button>
+        
       </div>
-    </div>
+    </header>
   );
 }
 
 /* ═══ APP ROOT ═══ */
 export default function App({ theme, toggleTheme }) {
-  const [jobs,     setJobs]     = useState(SEED_JOBS);
-  const [accounts, setAccounts] = useState(SEED_ACCOUNTS);
-  const [page,     setPage]     = useState("dashboard");
-  const [mobOpen,  setMobOpen]  = useState(false);
+  const [jobs, setJobs] = useState(() => {
+    try { const s = localStorage.getItem("jt-jobs"); return s ? JSON.parse(s) : SEED_JOBS; }
+    catch { return SEED_JOBS; }
+  });
+  const [accounts, setAccounts] = useState(() => {
+    try { const s = localStorage.getItem("jt-accounts"); return s ? JSON.parse(s) : SEED_ACCOUNTS; }
+    catch { return SEED_ACCOUNTS; }
+  });
+  const [page, setPage] = useState("dashboard");
+  const [mobOpen, setMobOpen] = useState(false);
   const [toastState, setToastState] = useState(null);
+
+  useEffect(() => {
+    localStorage.setItem("jt-jobs", JSON.stringify(jobs));
+  }, [jobs]);
+
+  useEffect(() => {
+    localStorage.setItem("jt-accounts", JSON.stringify(accounts));
+  }, [accounts]);
 
   useEffect(() => {
     const el = document.createElement("style");
@@ -1412,7 +1379,7 @@ export default function App({ theme, toggleTheme }) {
     return () => document.getElementById("jt-global")?.remove();
   }, []);
 
-  const toast = useCallback((msg, type="success") => {
+  const toast = useCallback((msg, type = "success") => {
     setToastState({ msg, type, k: uid() });
   }, []);
 
@@ -1420,41 +1387,43 @@ export default function App({ theme, toggleTheme }) {
     <div className="app-shell">
       {/* Desktop sidebar */}
       <div className="sidebar-wrap">
-        <Sidebar active={page} setActive={setPage}/>
+        <Sidebar active={page} setActive={setPage} />
       </div>
 
       {/* Mobile sidebar overlay */}
       {mobOpen && (
-        <div className="ovl" style={{ position:"fixed", inset:0, zIndex:1000 }}>
-          <div onClick={()=>setMobOpen(false)}
-            style={{ position:"absolute", inset:0, background:"rgba(19,19,43,.55)", backdropFilter:"blur(8px)" }}/>
-          <div style={{ position:"absolute", top:0, left:0, height:"100%", width:240,
-            animation:"slideUp .22s ease", boxShadow:"4px 0 30px rgba(0,0,0,.2)" }}>
-            <Sidebar active={page} setActive={p=>{ setPage(p); setMobOpen(false); }} onClose={()=>setMobOpen(false)}/>
+        <div className="ovl" style={{ position: "fixed", inset: 0, zIndex: 1000 }}>
+          <div onClick={() => setMobOpen(false)}
+            style={{ position: "absolute", inset: 0, background: "rgba(19,19,43,.55)", backdropFilter: "blur(8px)" }} />
+          <div style={{
+            position: "absolute", top: 0, left: 0, height: "100%", width: 240,
+            animation: "slideUp .22s ease", boxShadow: "4px 0 30px rgba(0,0,0,.2)"
+          }}>
+            <Sidebar active={page} setActive={p => { setPage(p); setMobOpen(false); }} onClose={() => setMobOpen(false)} />
           </div>
         </div>
       )}
 
       {/* Main content column */}
       <div className="main-wrap">
-        <TopBar page={page} theme={theme} toggleTheme={toggleTheme} onHamburger={()=>setMobOpen(true)}/>
+        <TopBar page={page} theme={theme} toggleTheme={toggleTheme} onHamburger={() => setMobOpen(true)} />
 
         {/* Scrollable page area — this is the ONLY scroll container */}
-        <div className="page-scroll" style={{ padding:"22px 22px 64px 22px" }}>
-          {page==="dashboard" && <DashboardPage jobs={jobs} accounts={accounts}/>}
-          {page==="jobs"      && <JobsPage      jobs={jobs} setJobs={setJobs} toast={toast}/>}
-          {page==="accounts"  && <AccountsPage  accounts={accounts} setAccounts={setAccounts} toast={toast}/>}
-          {page==="analytics" && <AnalyticsPage jobs={jobs}/>}
+        <div className="page-scroll" style={{ padding: "22px 22px 64px 22px" }}>
+          {page === "dashboard" && <DashboardPage jobs={jobs} accounts={accounts} />}
+          {page === "jobs" && <JobsPage jobs={jobs} setJobs={setJobs} toast={toast} />}
+          {page === "accounts" && <AccountsPage accounts={accounts} setAccounts={setAccounts} toast={toast} />}
+          {page === "analytics" && <AnalyticsPage jobs={jobs} />}
         </div>
       </div>
 
       {/* Mobile bottom nav — fixed, outside scroll */}
-      <BottomNav active={page} setActive={setPage}/>
+      <BottomNav active={page} setActive={setPage} />
 
       {/* Toast */}
       {toastState && (
         <Toast key={toastState.k} msg={toastState.msg} type={toastState.type}
-          onDone={()=>setToastState(null)}/>
+          onDone={() => setToastState(null)} />
       )}
     </div>
   );

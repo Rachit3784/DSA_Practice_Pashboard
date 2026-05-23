@@ -1,21 +1,22 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Briefcase, Code2, Sun, Moon, ArrowRight, Sparkles, Zap,
-  ShieldCheck, ChevronRight, Star, Users, TrendingUp
+  ShieldCheck, ChevronRight, Star, Users, TrendingUp, Hand
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import Arrays from "./pages/Arrays.jsx";
 import JobDashboard from "./pages/JobDashboard.jsx";
 
 const THEME_KEY = "navi-theme";
 
 /* ── Floating particles background ── */
-const PARTICLES = Array.from({ length: 18 }, (_, i) => ({
+const PARTICLES = Array.from({ length: 15 }, (_, i) => ({
   id: i,
   size: 3 + Math.random() * 6,
   left: Math.random() * 100,
-  delay: Math.random() * 12,
-  duration: 10 + Math.random() * 14,
-  opacity: 0.15 + Math.random() * 0.3,
+  delay: Math.random() * 8,
+  duration: 15 + Math.random() * 10,
+  opacity: 0.1 + Math.random() * 0.2,
 }));
 
 /* ── Auto-hide header hook ── */
@@ -76,6 +77,25 @@ export default function App() {
     localStorage.setItem(THEME_KEY, next);
   }, [theme]);
 
+  // Animation variants
+  const containerVars = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { staggerChildren: 0.15, delayChildren: 0.2 }
+    }
+  };
+
+  const itemVars = {
+    hidden: { y: 30, opacity: 0, scale: 0.95 },
+    visible: { 
+      y: 0, 
+      opacity: 1, 
+      scale: 1,
+      transition: { type: "spring", stiffness: 80, damping: 12 }
+    }
+  };
+
   if (route === "#dsa") return <Arrays theme={theme} toggleTheme={toggleTheme} />;
   if (route === "#jobs") return <JobDashboard theme={theme} toggleTheme={toggleTheme} />;
 
@@ -92,7 +112,7 @@ export default function App() {
       flexDirection: "column",
       position: "relative",
       overflowX: "hidden",
-      transition: "background 0.4s ease",
+      transition: "background 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
     }}>
 
       {/* ── Aurora Background Blobs ── */}
@@ -123,7 +143,7 @@ export default function App() {
         }} />
       ))}
 
-      {/* ── Auto-hide Header ── */}
+      {/* ── Header ── */}
       <header className={`meta-header glass-nav ${headerHidden ? "hidden" : "visible"}`}>
         <div style={{
           maxWidth: 1200, width: "100%", margin: "0 auto",
@@ -132,21 +152,22 @@ export default function App() {
         }}>
           {/* Logo */}
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <div style={{
-              width: 42, height: 42, borderRadius: 14,
-              background: "linear-gradient(135deg, #00D09C 0%, #0866FF 100%)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              boxShadow: "0 4px 16px rgba(0, 208, 156, 0.4)",
-              animation: "pulseRing 3s ease-in-out infinite",
-            }}>
+            <motion.div 
+              whileHover={{ rotate: 15, scale: 1.1 }}
+              style={{
+                width: 42, height: 42, borderRadius: 14,
+                background: "linear-gradient(135deg, #00D09C 0%, #0866FF 100%)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                boxShadow: "0 4px 16px rgba(0, 208, 156, 0.4)",
+              }}>
               <Sparkles size={20} color="#FFF" />
-            </div>
+            </motion.div>
             <div>
               <div style={{
                 fontWeight: 800, fontSize: 17, letterSpacing: "-0.5px",
                 color: "var(--text-primary)",
               }}>
-                navi <span style={{ color: "var(--navi-green)" }}>portal</span>
+                JobTrackPro <span style={{ color: "var(--navi-green)" }}>portal</span>
               </div>
               <div style={{
                 fontSize: 9, color: "var(--text-muted)", fontWeight: 700,
@@ -159,23 +180,27 @@ export default function App() {
 
           {/* Actions */}
           <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-            {/* Quick nav pills */}
             <div style={{ display: "flex", gap: 6 }} className="hide-mobile">
               {[
                 { label: "DSA Arena", hash: "#dsa", icon: Code2 },
                 { label: "Job Tracker", hash: "#jobs", icon: Briefcase },
               ].map(({ label, hash, icon: Icon }) => (
-                <a key={hash} href={hash} style={{
-                  display: "flex", alignItems: "center", gap: 6,
-                  padding: "7px 14px", borderRadius: 99,
-                  background: "var(--bg-card)",
-                  border: "1px solid var(--border)",
-                  color: "var(--text-secondary)",
-                  fontSize: 12, fontWeight: 600,
-                  textDecoration: "none",
-                  transition: "all 0.2s",
-                  cursor: "pointer",
-                }}
+                <motion.a 
+                  key={hash} 
+                  href={hash} 
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 6,
+                    padding: "7px 14px", borderRadius: 99,
+                    background: "var(--bg-card)",
+                    border: "1px solid var(--border)",
+                    color: "var(--text-secondary)",
+                    fontSize: 12, fontWeight: 600,
+                    textDecoration: "none",
+                    transition: "all 0.2s",
+                    cursor: "pointer",
+                  }}
                   onMouseEnter={e => {
                     e.currentTarget.style.borderColor = "var(--navi-green)";
                     e.currentTarget.style.color = "var(--navi-green)";
@@ -187,40 +212,47 @@ export default function App() {
                     e.currentTarget.style.background = "var(--bg-card)";
                   }}>
                   <Icon size={13} /> {label}
-                </a>
+                </motion.a>
               ))}
             </div>
 
-            {/* Theme toggle */}
-            <button onClick={toggleTheme} style={{
-              background: "var(--bg-card)",
-              border: "1px solid var(--border)",
-              borderRadius: "50%",
-              width: 40, height: 40,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              cursor: "pointer",
-              color: "var(--text-secondary)",
-              transition: "all 0.2s",
-            }}
+            <motion.button 
+              onClick={toggleTheme} 
+              whileHover={{ scale: 1.1, rotate: 15 }}
+              whileTap={{ scale: 0.9 }}
+              style={{
+                background: "var(--bg-card)",
+                border: "1px solid var(--border)",
+                borderRadius: "50%",
+                width: 40, height: 40,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                cursor: "pointer",
+                color: "var(--text-secondary)",
+                transition: "all 0.2s",
+              }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--navi-green)"; e.currentTarget.style.color = "var(--navi-green)"; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--text-secondary)"; }}
             >
               {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-            </button>
+            </motion.button>
           </div>
         </div>
       </header>
 
       {/* ── Hero ── */}
-      <main style={{
-        flex: 1, maxWidth: 1100, width: "100%",
-        margin: "0 auto", padding: "140px 24px 100px",
-        display: "flex", flexDirection: "column",
-        alignItems: "center", justifyContent: "center",
-        position: "relative", zIndex: 10,
-      }}>
-        {/* Label pill */}
-        <div className="slide-up" style={{
+      <motion.main 
+        initial="hidden"
+        animate="visible"
+        variants={containerVars}
+        style={{
+          flex: 1, maxWidth: 1100, width: "100%",
+          margin: "0 auto", padding: "140px 24px 100px",
+          display: "flex", flexDirection: "column",
+          alignItems: "center", justifyContent: "center",
+          position: "relative", zIndex: 10,
+        }}
+      >
+        <motion.div variants={itemVars} style={{
           display: "inline-flex", alignItems: "center", gap: 7,
           padding: "7px 18px", borderRadius: 99,
           background: "var(--navi-green-soft)",
@@ -232,22 +264,22 @@ export default function App() {
           <Zap size={12} fill="var(--navi-green)" />
           Next-Gen SDE Career Platform
           <ChevronRight size={12} />
-        </div>
+        </motion.div>
 
-        {/* Hero title */}
-        <div className="slide-up delay-1" style={{ textAlign: "center", marginBottom: 20 }}>
+        <motion.div variants={itemVars} style={{ textAlign: "center", marginBottom: 20 }}>
           <h1 className="hero-title" style={{
             fontSize: "clamp(36px, 7vw, 68px)",
             color: "var(--text-primary)",
             marginBottom: 0,
+            lineHeight: 1.1,
+            fontWeight: 900,
           }}>
             Master Coding.{" "}
             <span className="gradient-text">Track Wealth.</span>
           </h1>
-        </div>
+        </motion.div>
 
-        {/* Subtitle */}
-        <p className="slide-up delay-2" style={{
+        <motion.p variants={itemVars} style={{
           fontSize: "clamp(15px, 2.5vw, 18px)",
           color: "var(--text-secondary)",
           maxWidth: 580, margin: "0 auto 50px",
@@ -256,10 +288,9 @@ export default function App() {
         }}>
           Launch the interactive DSA Mastery board to polish problem-solving skills,
           or keep tabs on your job pipeline, offers, and credentials — all in one premium dashboard.
-        </p>
+        </motion.p>
 
-        {/* Stats row */}
-        <div className="slide-up delay-2" style={{
+        <motion.div variants={itemVars} style={{
           display: "flex", gap: 32, marginBottom: 56,
           flexWrap: "wrap", justifyContent: "center",
         }}>
@@ -284,17 +315,28 @@ export default function App() {
               <span>{label}</span>
             </div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Portal Cards */}
-        <div style={{
+        <motion.div variants={itemVars} style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
           gap: 24, width: "100%",
         }}>
-          {/* DSA Card */}
+
+           <PortalCard
+            hash="#jobs"
+            icon={Briefcase}
+            accentColor="#0866FF"
+            topGradient="linear-gradient(90deg, #0866FF, #00D09C)"
+            title="Job Applications Tracker"
+            desc="Organize your interviews, referrals, and CTC offerings. Export CSV reports, keep platform account credentials secure, and evaluate pipeline success."
+            cta="Open Applications Tracker"
+            stats={[{ icon: TrendingUp, text: "6 application stages" }, { icon: ShieldCheck, text: "Encrypted credentials vault" }]}
+          />
+
+          
           <PortalCard
-            delay="delay-3"
             hash="#dsa"
             icon={Code2}
             accentColor="#00D09C"
@@ -305,20 +347,9 @@ export default function App() {
             stats={[{ icon: Star, text: "100+ curated problems" }, { icon: Users, text: "LeetCode · Striver · GFG" }]}
           />
 
-          {/* Jobs Card */}
-          <PortalCard
-            delay="delay-4"
-            hash="#jobs"
-            icon={Briefcase}
-            accentColor="#0866FF"
-            topGradient="linear-gradient(90deg, #0866FF, #00D09C)"
-            title="Job Applications Tracker"
-            desc="Organize your interviews, referrals, and CTC offerings. Export CSV reports, keep platform account credentials secure, and evaluate pipeline success."
-            cta="Open Applications Tracker"
-            stats={[{ icon: TrendingUp, text: "6 application stages" }, { icon: ShieldCheck, text: "Encrypted credentials vault" }]}
-          />
-        </div>
-      </main>
+         
+        </motion.div>
+      </motion.main>
 
       {/* ── Footer ── */}
       <footer style={{
@@ -334,21 +365,24 @@ export default function App() {
       }}>
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 7 }}>
           <ShieldCheck size={13} color="var(--navi-green)" />
-          Secured · Navi UPI App Visual Design System · JobTrack Pro
+          Secured · App · JobTrack And Dsa Question Track Pro
         </div>
       </footer>
     </div>
   );
 }
 
-/* ── Portal Card Component ── */
-function PortalCard({ delay, hash, icon: Icon, accentColor, topGradient, title, desc, cta, stats }) {
+function PortalCard({ hash, icon: Icon, accentColor, topGradient, title, desc, cta, stats }) {
   const [hovered, setHovered] = useState(false);
 
   return (
-    <a href={hash} style={{ textDecoration: "none" }}>
+    <motion.a 
+      href={hash} 
+      style={{ textDecoration: "none" }}
+      whileHover={{ scale: 1.02, y: -5 }}
+      whileTap={{ scale: 0.98 }}
+    >
       <div
-        className={`portal-card slide-up ${delay}`}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         style={{
@@ -356,93 +390,61 @@ function PortalCard({ delay, hash, icon: Icon, accentColor, topGradient, title, 
           borderRadius: 24,
           border: "1px solid var(--border)",
           padding: "36px 30px",
+          height: "100%",
           cursor: "pointer",
           boxShadow: hovered ? `0 24px 60px rgba(0,0,0,0.12), 0 0 0 1.5px ${accentColor}` : "var(--shadow-md)",
           display: "flex", flexDirection: "column",
           position: "relative", overflow: "hidden",
-          transition: "all 0.32s cubic-bezier(0.4,0,0.2,1)",
-          transform: hovered ? "translateY(-8px) scale(1.01)" : "translateY(0) scale(1)",
+          transition: "all 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
-        {/* Top gradient stripe */}
         <div style={{
-          position: "absolute", top: 0, left: 0, width: "100%", height: 4,
-          background: topGradient,
-          borderRadius: "24px 24px 0 0",
-          opacity: hovered ? 1 : 0.7,
-          transition: "opacity 0.3s",
+          position: "absolute", top: 0, left: 0, width: "100%", height: 5,
+          background: topGradient, opacity: hovered ? 1 : 0.7,
         }} />
 
-        {/* Glow blob on hover */}
-        <div style={{
-          position: "absolute",
-          top: -40, right: -40,
-          width: 200, height: 200,
-          borderRadius: "50%",
-          background: `radial-gradient(circle, ${accentColor}20 0%, transparent 70%)`,
-          opacity: hovered ? 1 : 0,
-          transition: "opacity 0.4s ease",
-          pointerEvents: "none",
-        }} />
-
-        {/* Icon */}
         <div style={{
           width: 52, height: 52, borderRadius: 16,
           background: `linear-gradient(135deg, ${accentColor}22, ${accentColor}11)`,
           border: `1px solid ${accentColor}30`,
           display: "flex", alignItems: "center", justifyContent: "center",
           marginBottom: 22,
-          boxShadow: hovered ? `0 8px 24px ${accentColor}30` : "none",
-          transition: "box-shadow 0.3s",
         }}>
-          <Icon size={24} color={accentColor} strokeWidth={2} />
+          <motion.div animate={{ rotate: hovered ? 360 : 0 }} transition={{ duration: 0.6 }}>
+            <Icon size={24} color={accentColor} strokeWidth={2} />
+          </motion.div>
         </div>
 
-        {/* Title */}
         <h3 style={{
           fontSize: 22, fontWeight: 800, marginBottom: 10,
-          letterSpacing: "-0.5px", color: "var(--text-primary)",
-          fontFamily: "'Outfit', sans-serif",
+          color: "var(--text-primary)",
         }}>
           {title}
         </h3>
 
-        {/* Description */}
         <p style={{
-          fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.65,
-          flex: 1, marginBottom: 28, fontWeight: 400,
+          fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.6,
+          flex: 1, marginBottom: 24,
         }}>
           {desc}
         </p>
 
-        {/* Stats */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 28 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 28 }}>
           {stats.map(({ icon: SIcon, text }) => (
-            <div key={text} style={{
-              display: "flex", alignItems: "center", gap: 8,
-              fontSize: 12, color: "var(--text-muted)", fontWeight: 500,
-            }}>
-              <SIcon size={12} color={accentColor} />
+            <div key={text} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "var(--text-muted)" }}>
+              <SIcon size={14} color={accentColor} />
               {text}
             </div>
           ))}
         </div>
 
-        {/* CTA */}
-        <div style={{
-          display: "flex", alignItems: "center", gap: 8,
-          fontWeight: 700, fontSize: 14, color: accentColor,
-          transition: "gap 0.2s",
-        }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, fontWeight: 800, color: accentColor }}>
           {cta}
-          <div style={{
-            transform: hovered ? "translateX(4px)" : "translateX(0)",
-            transition: "transform 0.2s ease",
-          }}>
-            <ArrowRight size={16} />
-          </div>
+          <motion.div animate={{ x: hovered ? 6 : 0 }}>
+            <ArrowRight size={18} />
+          </motion.div>
         </div>
       </div>
-    </a>
+    </motion.a>
   );
 }

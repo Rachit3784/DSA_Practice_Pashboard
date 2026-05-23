@@ -127,16 +127,14 @@ body {
   50%       { transform: translateX(12px); }
 }
 @keyframes auroraPulse {
-  0%   { transform: scale(1) translate(0, 0); opacity: 0.6; }
-  33%  { transform: scale(1.15) translate(30px, -20px); opacity: 0.8; }
-  66%  { transform: scale(0.92) translate(-20px, 30px); opacity: 0.5; }
-  100% { transform: scale(1) translate(0, 0); opacity: 0.6; }
+  0%   { transform: scale(1) translate3d(0, 0, 0); opacity: 0.3; }
+  50%  { transform: scale(1.05) translate3d(15px, -10px, 0); opacity: 0.5; }
+  100% { transform: scale(1) translate3d(0, 0, 0); opacity: 0.3; }
 }
 @keyframes auroraPulse2 {
-  0%   { transform: scale(1) translate(0, 0); opacity: 0.5; }
-  33%  { transform: scale(0.9) translate(-30px, 20px); opacity: 0.7; }
-  66%  { transform: scale(1.2) translate(20px, -30px); opacity: 0.4; }
-  100% { transform: scale(1) translate(0, 0); opacity: 0.5; }
+  0%   { transform: scale(1) translate3d(0, 0, 0); opacity: 0.2; }
+  50%  { transform: scale(0.95) translate3d(-15px, 10px, 0); opacity: 0.4; }
+  100% { transform: scale(1) translate3d(0, 0, 0); opacity: 0.2; }
 }
 @keyframes gradientShift {
   0%   { background-position: 0% 50%; }
@@ -198,24 +196,24 @@ body {
 /* ── Glass morphism ── */
 .glass {
   background: var(--bg-glass);
-  backdrop-filter: blur(20px) saturate(1.6);
-  -webkit-backdrop-filter: blur(20px) saturate(1.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border);
-  box-shadow: var(--shadow-glass);
+  box-shadow: var(--shadow-sm);
 }
 .glass-nav {
   background: var(--bg-glass);
-  backdrop-filter: blur(24px) saturate(1.8);
-  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
-  box-shadow: 0 1px 0 var(--border), var(--shadow-sm);
+  box-shadow: 0 1px 0 var(--border);
 }
 
 /* ── Aurora blobs ── */
 .aurora-blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(70px);
+  filter: blur(40px); /* Reduced for performance */
   pointer-events: none;
   will-change: transform, opacity;
 }
@@ -258,6 +256,18 @@ body {
 
 /* ── Smooth transitions ── */
 .transition-all { transition: all 0.22s cubic-bezier(0.4,0,0.2,1); }
+
+/* ── Scroll Reveal Utility ── */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px) scale(0.95);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.scroll-reveal.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
 
 /* ── Gradient animated text ── */
 .gradient-text {
